@@ -4,7 +4,7 @@ export type Migration = {
 };
 
 export const migrations: Readonly<Migration[]> = Object.freeze([
-    {
+  {
     name: "001_create_companies_table",
     sql: `
       CREATE TABLE IF NOT EXISTS companies (
@@ -21,7 +21,8 @@ export const migrations: Readonly<Migration[]> = Object.freeze([
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         company_id INTEGER,
         name TEXT NOT NULL,
-        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (company_id) REFERENCES companies (id) ON DELETE SET NULL
       )
     `,
   },
@@ -31,16 +32,14 @@ export const migrations: Readonly<Migration[]> = Object.freeze([
       CREATE TABLE IF NOT EXISTS work_entries (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         project_id INTEGER NOT NULL,
-        work_date TEXT NOT NULL,
-        start_time TEXT NOT NULL,
-        end_time TEXT NOT NULL,
+        work_date TEXT NOT NULL CHECK (work_date GLOB '[0-9][0-9][0-9][0-9]-[0-1][0-9]-[0-3][0-9]'),
+        start_time TEXT NOT NULL CHECK (start_time GLOB '[0-2][0-9]:[0-5][0-9]'),
+        end_time TEXT NOT NULL CHECK (end_time GLOB '[0-2][0-9]:[0-5][0-9]'),
         qualification VARCHAR(255) NOT NULL,
         description TEXT,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-        updated_ad DATETIME DEFAULT CURRENT_TIMESTAMP,
-        CHECK (work_date GLOB '[0-9][0-9][0-9][0-9]-[0-1][0-9]-[0-3][0-9]'),
-        CHECK (start_time GLOB '[0-2][0-9]:[0-5][0-9]'),
-        CHECK (end_time   GLOB '[0-2][0-9]:[0-5][0-9]')
+        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (project_id) REFERENCES projects (id) ON DELETE SET NULL
       )
     `,
   },
