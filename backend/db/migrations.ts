@@ -10,7 +10,8 @@ export const migrations: Readonly<Migration[]> = Object.freeze([
       CREATE TABLE IF NOT EXISTS companies (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT NOT NULL,
-        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        is_deleted BOOLEAN DEFAULT 0
       )
     `,
   },
