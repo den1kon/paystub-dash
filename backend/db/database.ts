@@ -1,5 +1,7 @@
 import { Database } from "@db/sqlite";
 import { migrations, Migration } from "./migrations.ts";
+import { seedCompanies } from "./seed-companies.ts";
+import { CompanyModel } from "../models/company-model.ts";
 
 export default class Db {
   private connection: Database;
@@ -61,5 +63,10 @@ export default class Db {
         [migration.name]
       );
     })();
+  }
+
+  static seedCompanies(conn: Database): void {
+    const companyModel = new CompanyModel(conn);
+    seedCompanies(companyModel);
   }
 }
