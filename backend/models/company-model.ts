@@ -7,13 +7,17 @@ export type CompanyEntity = {
   is_deleted: boolean;
 };
 
+// SQLite (driver) is synchronous, so no need for async/await
+// No plans to migrate to an async DB atm
+
 export class CompanyModel {
   constructor(private db: Database) {}
 
-  getAll(): CompanyEntity[] {
-    const stmt = this.db.prepare(
-      "SELECT id, name, created_at, is_deleted FROM companies",
-    );
+  getAll(includeDeleted: boolean = false): CompanyEntity[] {
+    const sql = includeDeleted
+      ? "SELECT id, name, created_at, is_deleted FROM companies"
+      : "SELECT id, name, created_at, is_deleted FROM companies WHERE is_deleted = 0";
+    const stmt = this.db.prepare(sql);
     const result: CompanyEntity[] = stmt.all();
     return result;
   }
@@ -26,24 +30,36 @@ export class CompanyModel {
     return result || null;
   }
 
-  create(name: string): void {
+  // returns id of created company
+  create(name: string): number {
     const stmt = this.db.prepare(
       "INSERT INTO companies (name) VALUES (?)",
     );
     stmt.run(name);
+    const id = this.db.lastInsertRowId as number;
+    return id;
   }
 
-  updateName(entity: CompanyEntity): void {
+  // return number of rows affected
+  updateName(id: number, name: string): number {
+    // extra validation can not hurt
+    if (!name || name.trim().length === 0) {
+      throw new Error("Name cannot be empty");
+    }
+
     const stmt = this.db.prepare(
       "UPDATE companies SET name = ? WHERE id = ?",
     );
-    stmt.run(entity.name, entity.id);
+    stmt.run(name, id);
+    return this.db.changes;
   }
 
-  softDelete(id: number): void {
+  // return number of rows affected
+  softDelete(id: number): number {
     const stmt = this.db.prepare(
       "UPDATE companies SET is_deleted = 1 WHERE id = ?",
     );
     stmt.run(id);
+    return this.db.changes;
   }
 }
