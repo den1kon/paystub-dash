@@ -9,6 +9,7 @@ import {
 } from "./controllers/company-controller.ts";
 import { Database } from "@db/sqlite";
 import { logger } from "./middleware/logger.ts";
+import { errorHandler } from "./middleware/error-handler.ts";
 
 export function createApp(conn: Database): Application {
   const companyModel = new CompanyModel(conn);
@@ -21,7 +22,10 @@ export function createApp(conn: Database): Application {
 
   router.get("/api/v0/companies", makeGetAllCompaniesResponse(companyModel));
   router.post("/api/v0/companies", makeCreateCompanyResponse(companyModel));
-  router.put("/api/v0/companies/:id", makeUpdateCompanyNameResponse(companyModel));
+  router.put(
+    "/api/v0/companies/:id",
+    makeUpdateCompanyNameResponse(companyModel),
+  );
   router.delete(
     "/api/v0/companies/:id",
     makeDeleteCompanyResponse(companyModel),
@@ -29,7 +33,9 @@ export function createApp(conn: Database): Application {
 
   const app = new Application();
 
+  // Middleware
   app.use(logger);
+  app.use(errorHandler);
 
   app.use(router.routes());
   app.use(router.allowedMethods());
