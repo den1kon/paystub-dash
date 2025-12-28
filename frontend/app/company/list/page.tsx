@@ -2,6 +2,7 @@ import { columns, Company } from "./columns";
 import { DataTable } from "./data-table";
 
 import { TableContainer } from "./table-container";
+import { getCompanies } from "@/lib/api";
 
 const companies: Company[] = [
   { id: 1, name: "Acme Corp", isDeleted: false },
@@ -9,7 +10,7 @@ const companies: Company[] = [
 ]
 
 export default async function DemoPage() {
-  const data = companies;
+  const data = await getCompanies();
 
   return (
     <TableContainer title="Companies Data Table">

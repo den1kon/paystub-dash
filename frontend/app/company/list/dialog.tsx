@@ -1,3 +1,5 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -14,21 +16,41 @@ import { Label } from "@/components/ui/label";
 
 import { PlusIcon } from "lucide-react";
 
-export function AddCompanyButton() {
+import { postCompany } from "@/lib/api";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 
-const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+export function AddCompanyButton() {
+  const router = useRouter();
+  const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const formData = new FormData(event.currentTarget);
+    const form = event.currentTarget;
+    const formData = new FormData(form);
     const companyName = formData.get("company-name") as string;
-    
-    console.log(companyName);
-  }
+    // todo add validation
+
+    setLoading(true);
+    try {
+      setOpen(false); // close dialog
+      await postCompany(companyName);
+      form.reset(); // clear the form
+      router.refresh(); // refresh server-rendered data table
+    } catch (error) {
+      console.error("Error adding company:", error);
+      alert("Unexpected error. Report to admin.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <form id="add-company-form" onSubmit={handleSubmit}>
         <DialogTrigger asChild>
-          <Button variant="default" size="icon-lg">
+          <Button variant="default" size="icon-lg" type="button" disabled={loading}>
             <PlusIcon />
           </Button>
         </DialogTrigger>
@@ -53,9 +75,13 @@ const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
           </div>
           <DialogFooter>
             <DialogClose asChild>
-              <Button variant="outline">Cancel</Button>
+              <Button variant="outline" type="button" disabled={loading}>
+                Cancel
+              </Button>
             </DialogClose>
-            <Button type="submit" form="add-company-form">Submit</Button>
+            <Button type="submit" form="add-company-form" disabled={loading}>
+              {loading ? "Submitting..." : "Submit"}
+            </Button>
           </DialogFooter>
         </DialogContent>
       </form>
