@@ -12,3 +12,6 @@ Went with SQLite for simplicity
 middleware framework
 
 1. Install: `deno add jsr:@oak/oak`
+2. Setup router
+3. Setup application
+4. Setup middleware
