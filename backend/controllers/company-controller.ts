@@ -1,7 +1,7 @@
 import { type RouterContext } from "@oak/oak/router";
 import type { Context } from "@oak/oak/context";
 import { toDTO } from "../mappers/company.ts";
-import { parseJsonBody, validateName, validateIdParam } from "../validators/company-validator.ts";
+import { parseJsonBody, validateName, validateIdParam } from "../utils/company-validator.ts";
 import { successResponse, errorResponse } from "../utils/response-helper.ts";
 
 
