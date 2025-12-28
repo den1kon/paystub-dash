@@ -21,16 +21,11 @@ export function createApp(conn: Database): Application {
 
   router.get("/api/v0/companies", makeGetAllCompaniesResponse(companyModel));
   router.post("/api/v0/companies", makeCreateCompanyResponse(companyModel));
-  router.put("/api/v0/companies", makeUpdateCompanyNameResponse(companyModel));
+  router.put("/api/v0/companies/:id", makeUpdateCompanyNameResponse(companyModel));
   router.delete(
     "/api/v0/companies/:id",
     makeDeleteCompanyResponse(companyModel),
   );
-
-  router.delete('users/:userId', (ctx) => {
-    const userId = ctx.params.userId;
-    console.log(`User ID from URL: ${userId}`);
-  })
 
   const app = new Application();
 
