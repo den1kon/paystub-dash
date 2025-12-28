@@ -1,3 +1,4 @@
+// deno-lint-ignore-file no-empty
 import { Database, Statement } from "@db/sqlite";
 
 export type CompanyEntity = {
@@ -18,6 +19,8 @@ export class CompanyModel {
   private stmtCreate: Statement<Record<string, unknown>>;
   private stmtUpdateName: Statement<Record<string, unknown>>;
   private stmtSoftDelete: Statement<Record<string, unknown>>;
+
+  private closed: boolean = false; // idempotent close guard
 
   constructor(private db: Database) {
     this.stmtGetAllWithDeleted = this.db.prepare(
@@ -78,6 +81,10 @@ export class CompanyModel {
   }
 
   close(): void {
+    if (this.closed) return; // idempotent guard
+    this.closed = true;
+    
+    // finalize statements
     try {
       this.stmtGetAllWithoutDeleted.finalize();
     } catch {}

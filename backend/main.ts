@@ -9,9 +9,23 @@ const conn = dbInstance.getConnection();
 
 // Db.seedCompanies(conn);
 
-const app = createApp(conn);
+const { app, shutdown } = createApp(conn);
 
 console.log("Starting server on http://localhost:8080");
+
+// graceful signal handling (Deno)
+Deno.addSignalListener("SIGINT", () => {
+  console.log("SIGINT received — shutting down");
+  shutdown();
+  dbInstance.close();
+  Deno.exit();
+});
+Deno.addSignalListener("SIGTERM", () => {
+  console.log("SIGTERM received — shutting down");
+  shutdown();
+  dbInstance.close();
+  Deno.exit();
+});
 
 await app.listen({ port: 8080 });
 

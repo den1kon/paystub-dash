@@ -11,7 +11,7 @@ import { Database } from "@db/sqlite";
 import { logger } from "./middleware/logger.ts";
 import { errorHandler } from "./middleware/error-handler.ts";
 
-export function createApp(conn: Database): Application {
+export function createApp(conn: Database): {app: Application, shutdown: () => void} {
   const companyModel = new CompanyModel(conn);
   const router = new Router();
 
@@ -40,5 +40,19 @@ export function createApp(conn: Database): Application {
   app.use(router.routes());
   app.use(router.allowedMethods());
 
-  return app;
+  const shutdown = () => {
+    console.log("Shutting down application...");
+    try {
+      companyModel.close();
+      console.log("Application shutdown complete.");
+    } catch (err) {
+      console.error("Error during application shutdown:", err);
+    }
+  };
+
+  app.addEventListener("close", () => {
+    shutdown();
+  });
+
+  return {app, shutdown};
 }
