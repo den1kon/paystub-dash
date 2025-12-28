@@ -32,7 +32,7 @@ const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
             <PlusIcon />
           </Button>
         </DialogTrigger>
-        <DialogContent className="sm:max-w-[425px]">
+        <DialogContent className="sm:max-w-106.25">
           <DialogHeader>
             <DialogTitle>Add new Company</DialogTitle>
             <DialogDescription>
