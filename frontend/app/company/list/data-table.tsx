@@ -29,6 +29,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
 import { DataTablePagination } from "./pagination";
+import { AddCompanyButton } from "./dialog";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -43,7 +44,7 @@ export function DataTable<TData, TValue>({
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
   );
-  const [rowSelection, setRowSelection] = React.useState({})
+  const [rowSelection, setRowSelection] = React.useState({});
 
   const table = useReactTable({
     data,
@@ -73,13 +74,16 @@ export function DataTable<TData, TValue>({
           }
           className="max-w-sm"
         />
-        <Button
+        {/* <Button
           variant="default"
           size="icon-lg"
           onClick={() => console.log(data, rowSelection)}
         >
-          <a href="/add-company"><PlusIcon /></a>
-        </Button>
+          <a href="/add-company">
+            <PlusIcon />
+          </a>
+        </Button> */}
+        <AddCompanyButton />
       </div>
       <div className="overflow-hidden rounded-md border">
         <Table>
@@ -131,7 +135,7 @@ export function DataTable<TData, TValue>({
           </TableBody>
         </Table>
       </div>
-        <DataTablePagination table={table} />
+      <DataTablePagination table={table} />
     </div>
   );
 }
