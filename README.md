@@ -2,4 +2,4 @@
 [description of the project]
 
 ## Backend
-- Technology: Deno
+- Technology: Deno, Oak
