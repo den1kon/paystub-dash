@@ -4,6 +4,7 @@ import { Database, Statement } from "@db/sqlite";
 export type CompanyEntity = {
   id: number;
   name: string;
+  alias: string | null;
   created_at: string;
   is_deleted: boolean;
 };
@@ -17,26 +18,26 @@ export class CompanyModel {
   private stmtGetAllWithoutDeleted: Statement<Record<string, unknown>>;
   private stmtGetById: Statement<Record<string, unknown>>;
   private stmtCreate: Statement<Record<string, unknown>>;
-  private stmtUpdateName: Statement<Record<string, unknown>>;
+  private stmtUpdate: Statement<Record<string, unknown>>;
   private stmtSoftDelete: Statement<Record<string, unknown>>;
 
   private closed: boolean = false; // idempotent close guard
 
   constructor(private db: Database) {
     this.stmtGetAllWithDeleted = this.db.prepare(
-      "SELECT id, name, created_at, is_deleted FROM companies",
+      "SELECT id, name, alias, created_at, is_deleted FROM companies",
     );
     this.stmtGetAllWithoutDeleted = this.db.prepare(
-      "SELECT id, name, created_at, is_deleted FROM companies WHERE is_deleted = 0",
+      "SELECT id, name, alias, created_at, is_deleted FROM companies WHERE is_deleted = 0",
     );
     this.stmtGetById = this.db.prepare(
-      "SELECT id, name, created_at, is_deleted FROM companies WHERE id = ?",
+      "SELECT id, name, alias, created_at, is_deleted FROM companies WHERE id = ?",
     );
     this.stmtCreate = this.db.prepare(
-      "INSERT INTO companies (name) VALUES (?)",
+      "INSERT INTO companies (name, alias) VALUES (?, ?)",
     );
-    this.stmtUpdateName = this.db.prepare(
-      "UPDATE companies SET name = ? WHERE id = ?",
+    this.stmtUpdate = this.db.prepare(
+      "UPDATE companies SET name = ?, alias = ? WHERE id = ?",
     );
     this.stmtSoftDelete = this.db.prepare(
       "UPDATE companies SET is_deleted = 1 WHERE id = ?",
@@ -57,20 +58,20 @@ export class CompanyModel {
   }
 
   // returns id of created company
-  create(name: string): number {
-    this.stmtCreate.run(name);
+  create(name: string, alias: string | null): number {
+    this.stmtCreate.run(name, alias);
     const id = this.db.lastInsertRowId as number;
     return id;
   }
 
   // return number of rows affected
-  updateName(id: number, name: string): number {
+  update(id: number, name: string, alias: string | null): number {
     // extra validation can not hurt
     if (!name || name.trim().length === 0) {
       throw new Error("Name cannot be empty");
     }
 
-    this.stmtUpdateName.run(name, id);
+    this.stmtUpdate.run(name, alias, id);
     return this.db.changes;
   }
 
@@ -98,7 +99,7 @@ export class CompanyModel {
       this.stmtCreate.finalize();
     } catch {}
     try {
-      this.stmtUpdateName.finalize();
+      this.stmtUpdate.finalize();
     } catch {}
     try {
       this.stmtSoftDelete.finalize();

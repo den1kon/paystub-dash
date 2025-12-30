@@ -10,8 +10,11 @@ import {
 import { Database } from "@db/sqlite";
 import { logger } from "./middleware/logger.ts";
 import { errorHandler } from "./middleware/error-handler.ts";
+import { oakCors } from "https://deno.land/x/cors/mod.ts";
 
-export function createApp(conn: Database): {app: Application, shutdown: () => void} {
+export function createApp(
+  conn: Database,
+): { app: Application; shutdown: () => void } {
   const companyModel = new CompanyModel(conn);
   const router = new Router();
 
@@ -34,6 +37,7 @@ export function createApp(conn: Database): {app: Application, shutdown: () => vo
   const app = new Application();
 
   // Middleware
+  app.use(oakCors({ origin: "*" }));
   app.use(logger);
   app.use(errorHandler);
 
@@ -54,5 +58,5 @@ export function createApp(conn: Database): {app: Application, shutdown: () => vo
     shutdown();
   });
 
-  return {app, shutdown};
+  return { app, shutdown };
 }

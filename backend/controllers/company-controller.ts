@@ -29,7 +29,7 @@ export const makeGetAllCompaniesResponse = (companyModel: CompanyModel) => {
   return (ctx: Context) => {
       const companies = CompanyService.getAllCompanies(companyModel);
       ctx.response.status = 200;
-      ctx.response.body = { data: companies };
+      ctx.response.body = companies;
   };
 };
 
