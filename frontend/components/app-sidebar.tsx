@@ -25,7 +25,7 @@ const items = [
   },
   {
     title: "Projects",
-    url: "/project/list",
+    url: "/projects",
     icon: NotepadText,
   },
   {

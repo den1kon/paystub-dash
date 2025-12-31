@@ -12,15 +12,15 @@ import {
 
 import { MoreHorizontal } from "lucide-react";
 
-import { deleteCompany } from "@/lib/api/company";
+import { deleteProject } from "@/lib/api/project";
 import { useState } from "react";
 
-import { Company } from "@/lib/types";
+import { Project } from "@/lib/types";
 import { useSWRConfig } from "swr";
 
-import { EditCompanyDialog } from "./edit-company";
+import { EditProjectDialog } from "./edit-project";
 
-export function RowActions({ company }: { company: Company }) {
+export function RowActions({ project }: { project: Project }) {
   const { mutate } = useSWRConfig();
   const [open, setOpen] = useState(false);
   //   const [loading, setLoading] = useState(false);
@@ -49,19 +49,19 @@ export function RowActions({ company }: { company: Company }) {
           </DialogTrigger>
           <DropdownMenuItem
             onClick={async () => {
-              await deleteCompany(company.id);
-              await mutate(process.env.NEXT_PUBLIC_BACKEND_URI + "/companies");
+              await deleteProject(project.id);
+              await mutate(process.env.NEXT_PUBLIC_BACKEND_URI + "/projects");
             }}
           >
-            Delete company
+            Delete project
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
       {/* <DialogTrigger asChild>
-        <DropdownMenuItem>Edit company</DropdownMenuItem>
+        <DropdownMenuItem>Edit project</DropdownMenuItem>
       </DialogTrigger> */}
 
-      <EditCompanyDialog company={company} setOpen={setOpen} open={open} />
+      <EditProjectDialog project={project} setOpen={setOpen} open={open} />
     </Dialog>
   );
 }

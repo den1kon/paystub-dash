@@ -12,3 +12,12 @@ export type Company = {
   alias: string | null;
   isDeleted: boolean;
 };
+
+export type Project = {
+  id: number;
+  companyId: number | null;
+  name: string;
+  alias: string | null;
+  isDeleted: boolean;
+  company?: Company | null;
+};
