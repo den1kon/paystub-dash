@@ -1,6 +1,6 @@
 import { NotFoundError, ValidationError, InternalServerError } from "../utils/errors.ts";
 import { ProjectDTO } from "../utils/dtos/project-dto.ts";
-import { toDTO } from "../utils/mappers/project.ts";
+import { toDTO } from "../utils/mappers/project-map.ts";
 import { parseAndValidateName, parseAndValidateIdParam } from "../utils/company-validator.ts";
 
 import { type ProjectModel } from "../models/project-model.ts";

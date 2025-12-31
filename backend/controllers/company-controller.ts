@@ -1,26 +1,11 @@
 import { type RouterContext } from "@oak/oak/router";
 import type { Context } from "@oak/oak/context";
 import { parseJsonBody } from "../utils/company-validator.ts";
-import { successResponse, errorResponse } from "../utils/response-helper.ts";
-
+import { successResponse } from "../utils/response-helper.ts";
+import { handleError } from "../utils/errors.ts";
 
 import { type CompanyModel } from "../models/company-model.ts";
-
-
 import * as CompanyService from "../services/company-service.ts";
-
-import { CustomError } from "../utils/errors.ts";
-
-
-const handleError = (ctx: Context, err: unknown) => {
-  if (err instanceof CustomError) {
-    console.log("Service error:", err);
-    errorResponse(ctx, err.status, err.message);
-    return;
-  }
-  throw err;
-}
-
 
 /* Handler factories */
 // easier to inject dependencies
