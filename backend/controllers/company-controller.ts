@@ -50,7 +50,7 @@ export const makeUpdateCompanyNameResponse = (companyModel: CompanyModel) => {
     try {
       const idParam = ctx.params.id;
       const body = await parseJsonBody(ctx);
-      CompanyService.updateCompanyName(companyModel, idParam, body.name);
+      CompanyService.updateCompanyName(companyModel, idParam, body.name, body.alias);
       successResponse(ctx, 200, "Company name updated successfully");
     } catch (err) {
       handleError(ctx, err);
