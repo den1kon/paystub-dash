@@ -68,7 +68,7 @@ export function AddCompanyButton() {
           </Button>
         </DialogTrigger>
 
-        <DialogContent className="sm:max-w-106.25">
+        <DialogContent className="sm:max-w-106.25" onOpenAutoFocus={(e) => e.preventDefault()}>
           <DialogHeader>
             <DialogTitle>Add new Company</DialogTitle>
             <DialogDescription>
