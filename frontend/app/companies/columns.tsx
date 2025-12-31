@@ -7,9 +7,6 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { DataTableColumnHeader } from "./column-header";
 import { RowActions } from "./row-actions";
 
-import { deleteCompany } from "@/lib/api";
-import { mutate } from "swr";
-
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
 // export type Company = {

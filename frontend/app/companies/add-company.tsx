@@ -42,7 +42,7 @@ export function AddCompanyButton() {
       //   setOpen(false);
       //   form.reset(); // clear the form
       //   router.refresh(); // refresh server-rendered data table
-      await mutate("http://localhost:8080/api/v0/companies");
+      await mutate(process.env.NEXT_PUBLIC_BACKEND_URI + "/companies");
     } catch (error) {
       console.error("Error adding company:", error);
       alert("Unexpected error. Report to admin.");

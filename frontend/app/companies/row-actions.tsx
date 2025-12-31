@@ -51,7 +51,7 @@ export function RowActions({ company }: { company: Company }) {
             onClick={async () => {
               console.log(company.id);
               await deleteCompany(company.id);
-              await mutate("http://localhost:8080/api/v0/companies");
+              await mutate(process.env.NEXT_PUBLIC_BACKEND_URI + "/companies");
             }}
           >
             Delete company

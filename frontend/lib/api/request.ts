@@ -1,7 +1,7 @@
-import { RequestOptions, Company } from "../types";
+import { RequestOptions } from "../types";
 import { ApiError } from "../errors";
 
-const urlBase = process.env.BACKEND_URI?.toString() ||
+const urlBase = process.env.NEXT_PUBLIC_BACKEND_URI?.toString() ||
     "http://localhost:8080/api/v0";
 
 export async function request<T>(path: string, opts: RequestOptions = {}): Promise<T> {
