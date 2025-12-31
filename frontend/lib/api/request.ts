@@ -1,27 +1,10 @@
-import { Company } from "./types";
+import { RequestOptions, Company } from "../types";
+import { ApiError } from "../errors";
 
 const urlBase = process.env.BACKEND_URI?.toString() ||
     "http://localhost:8080/api/v0";
 
-type RequestOptions = {
-    method?: "GET" | "POST" | "PUT" | "DELETE";
-    body?: unknown;
-    headers?: Record<string, string>;
-    cache?: RequestCache;
-    timeoutMs?: number;
-};
-
-class ApiError extends Error {
-    status: number;
-    body?: unknown;
-    constructor(message: string, status: number, body?: unknown) {
-        super(message);
-        this.status = status;
-        this.body = body;
-    }
-}
-
-async function request<T>(path: string, opts: RequestOptions = {}): Promise<T> {
+export async function request<T>(path: string, opts: RequestOptions = {}): Promise<T> {
     const { method = "GET", body, headers = {}, timeoutMs = 10_000 } = opts;
     const controller = new AbortController();
     const id = setTimeout(() => controller.abort(), timeoutMs);
@@ -85,36 +68,4 @@ async function request<T>(path: string, opts: RequestOptions = {}): Promise<T> {
     const text = await res.text().catch(() => "");
     // @ts-ignore
     return text;
-}
-
-export async function postCompany(
-    name: string,
-    alias: string | null,
-): Promise<Company> {
-    return request<Company>("/companies", {
-        method: "POST",
-        body: { name, alias },
-    });
-}
-
-export async function getCompanies(): Promise<Company[]> {
-    return request<Company[]>("/companies", {
-        method: "GET",
-        cache: "no-store",
-    });
-}
-
-export async function deleteCompany(id: number): Promise<void> {
-    await request<void>(`/companies/${id}`, { method: "DELETE" });
-}
-
-export async function updateCompany(
-    id: number,
-    name: string,
-    alias: string | null,
-): Promise<Company | void> {
-    return request<Company | void>(`/companies/${id}`, {
-        method: "PUT",
-        body: { name, alias },
-    });
 }

@@ -14,11 +14,10 @@ import { Label } from "@/components/ui/label";
 
 import { PlusIcon } from "lucide-react";
 
-import { postCompany } from "@/lib/api";
+import { postCompany } from "@/lib/api/company";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
-import { Company } from "@/lib/types";
 import { useSWRConfig } from "swr";
 
 export function AddCompanyButton() {

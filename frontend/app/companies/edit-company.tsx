@@ -10,10 +10,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 
-import { updateCompany } from "@/lib/api";
+import { updateCompany } from "@/lib/api/company";
 import { Company } from "@/lib/types";
 import { mutate, useSWRConfig } from "swr";
-import { useState } from "react";
 
 export function EditCompanyDialog({ company, setOpen, open }: { company: Company, setOpen: React.Dispatch<React.SetStateAction<boolean>>, open: boolean }) {
   const { mutate } = useSWRConfig();

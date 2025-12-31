@@ -12,7 +12,7 @@ import {
 
 import { MoreHorizontal } from "lucide-react";
 
-import { deleteCompany } from "@/lib/api";
+import { deleteCompany } from "@/lib/api/company";
 import { useState } from "react";
 
 import { Company } from "@/lib/types";
