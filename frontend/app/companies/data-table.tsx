@@ -2,12 +2,13 @@
 
 import * as React from "react";
 
-import { PlusIcon } from "lucide-react";
+import { AddCompanyButton } from "./add-company";
 
 import {
   ColumnDef,
   ColumnFiltersState,
   flexRender,
+  VisibilityState,
   SortingState,
   getCoreRowModel,
   getFilteredRowModel,
@@ -25,11 +26,9 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
 import { DataTablePagination } from "./pagination";
-import { AddCompanyButton } from "./dialog";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -45,6 +44,8 @@ export function DataTable<TData, TValue>({
     []
   );
   const [rowSelection, setRowSelection] = React.useState({});
+  const [columnVisibility, setColumnVisibility] =
+    React.useState<VisibilityState>({});
 
   const table = useReactTable({
     data,
@@ -56,10 +57,12 @@ export function DataTable<TData, TValue>({
     onColumnFiltersChange: setColumnFilters,
     getFilteredRowModel: getFilteredRowModel(),
     onRowSelectionChange: setRowSelection,
+    onColumnVisibilityChange: setColumnVisibility,
     state: {
       sorting,
       columnFilters,
       rowSelection,
+      columnVisibility,
     },
   });
 
@@ -74,15 +77,6 @@ export function DataTable<TData, TValue>({
           }
           className="max-w-sm"
         />
-        {/* <Button
-          variant="default"
-          size="icon-lg"
-          onClick={() => console.log(data, rowSelection)}
-        >
-          <a href="/add-company">
-            <PlusIcon />
-          </a>
-        </Button> */}
         <AddCompanyButton />
       </div>
       <div className="overflow-hidden rounded-md border">
@@ -92,7 +86,7 @@ export function DataTable<TData, TValue>({
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
                   return (
-                    <TableHead key={header.id}>
+                    <TableHead className="text-left" key={header.id}>
                       {header.isPlaceholder
                         ? null
                         : flexRender(
@@ -113,7 +107,7 @@ export function DataTable<TData, TValue>({
                   data-state={row.getIsSelected() && "selected"}
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
+                    <TableCell className="text-left" key={cell.id}>
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()
