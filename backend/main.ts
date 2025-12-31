@@ -7,7 +7,8 @@ dbInstance.init();
 
 const conn = dbInstance.getConnection();
 
-// Db.seedCompanies(conn);
+Db.seedCompanies(conn);
+Db.seedProjects(conn);
 
 const { app, shutdown } = createApp(conn);
 

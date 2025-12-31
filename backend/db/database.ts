@@ -1,7 +1,9 @@
 import { Database } from "@db/sqlite";
-import { migrations, Migration } from "./migrations.ts";
+import { Migration, migrations } from "./migrations.ts";
 import { seedCompanies } from "./seed-companies.ts";
+import { seedProjects } from "./seed-projects.ts";
 import { CompanyModel } from "../models/company-model.ts";
+import { ProjectModel } from "../models/project-model.ts";
 
 export default class Db {
   private connection: Database;
@@ -17,7 +19,7 @@ export default class Db {
 
     const appliedMigrations = this.getAppliedMigrations();
     const pendingMigrations = migrations.filter(
-      (migration) => !appliedMigrations.has(migration.name)
+      (migration) => !appliedMigrations.has(migration.name),
     );
 
     for (const migration of pendingMigrations) {
@@ -60,7 +62,7 @@ export default class Db {
       this.connection.exec(migration.sql);
       this.connection.run(
         "INSERT INTO migrations (name) VALUES (?)",
-        [migration.name]
+        [migration.name],
       );
     })();
   }
@@ -68,5 +70,10 @@ export default class Db {
   static seedCompanies(conn: Database): void {
     const companyModel = new CompanyModel(conn);
     seedCompanies(companyModel);
+  }
+
+  static seedProjects(conn: Database): void {
+    const projectModel = new ProjectModel(conn);
+    seedProjects(projectModel);
   }
 }

@@ -23,7 +23,9 @@ export const migrations: Readonly<Migration[]> = Object.freeze([
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         company_id INTEGER,
         name TEXT NOT NULL,
+        alias TEXT,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        is_deleted BOOLEAN DEFAULT 0,
         FOREIGN KEY (company_id) REFERENCES companies (id) ON DELETE SET NULL
       )
     `,
