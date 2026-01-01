@@ -2,6 +2,9 @@
 
 import * as React from "react"
 import {
+  NotepadText,
+  Hammer,
+  Building2,
   Camera,
   ChartBar,
   Database,
@@ -33,78 +36,30 @@ const data = {
   },
   navMain: [
     {
-      title: "Dashboard",
-      url: "#",
-      icon: Camera,
-    },
-    {
-      title: "Lifecycle",
-      url: "#",
-      icon: Camera,
-    },
-    {
-      title: "Analytics",
-      url: "#",
-      icon: ChartBar,
+      title: "Work Entries",
+      url: "/work-entries",
+      icon: NotepadText,
     },
     {
       title: "Projects",
-      url: "#",
-      icon: Folder,
+      url: "/projects",
+      icon: Hammer,
     },
     {
-      title: "Team",
-      url: "#",
-      icon: Users,
+      title: "Companies",
+      url: "/companies",
+      icon: Building2,
     },
-  ],
-  navClouds: [
-    {
-      title: "Capture",
-      icon: Camera,
-      isActive: true,
-      url: "#",
-      items: [
-        {
-          title: "Active Proposals",
-          url: "#",
-        },
-        {
-          title: "Archived",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Proposal",
-      icon: Camera,
-      url: "#",
-      items: [
-        {
-          title: "Active Proposals",
-          url: "#",
-        },
-        {
-          title: "Archived",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Prompts",
-      icon: Camera,
-      url: "#",
-      items: [
-        {
-          title: "Active Proposals",
-          url: "#",
-        },
-        {
-          title: "Archived",
-          url: "#",
-        },
-      ],
-    },
+    // {
+    //   title: "Projects",
+    //   url: "#",
+    //   icon: Folder,
+    // },
+    // {
+    //   title: "Team",
+    //   url: "#",
+    //   icon: Users,
+    // },
   ],
   navSecondary: [
     {
@@ -112,11 +67,11 @@ const data = {
       url: "#",
       icon: Settings,
     },
-    {
-      title: "Get Help",
-      url: "#",
-      icon: Settings,
-    },
+    // {
+    //   title: "Get Help",
+    //   url: "#",
+    //   icon: Settings,
+    // },
     {
       title: "Search",
       url: "#",
@@ -162,7 +117,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
-        <NavDocuments items={data.documents} />
+        {/* <NavDocuments items={data.documents} /> */}
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>

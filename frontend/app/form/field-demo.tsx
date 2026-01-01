@@ -19,9 +19,30 @@ import { TimePicker } from "./form/time-picker";
 import { Textarea } from "@/components/ui/textarea";
 import { useState } from "react";
 
+type Project = {
+  id: number;
+  name: string;
+}
+
+type Qualification = "Homeoffice" | "Bauleitung";
+
+type WorkEntryPostData = {
+  projectId: Project['id'];
+  qualification: Qualification;
+  description: string;
+  startTime: string; // hh-mm
+  endTime: string; // hh-mm
+  entryDate: string; // yyyy-mm-dd
+}
+
 export function FieldDemo() {
+  const [project, setProject] = useState<Project>();
+  const [qualification, setQualification] = useState<Qualification>('Homeoffice');
+  const [description, setDescription] = useState<string>("");
   const [startTime, setStartTime] = useState<string>("10:00");
   const [endTime, setEndTime] = useState<string>("18:00");
+  const [entryDate, setEntryDate] = useState<Date>(new Date());
+
   return (
     <div className="border-muted-foreground w-full max-w-3xl rounded-2xl border p-6">
       <form>
@@ -33,8 +54,7 @@ export function FieldDemo() {
             <FieldDescription>[description goes here]</FieldDescription>
             <FieldGroup>
               <div className="grid grid-cols-1 gap-4 md:grid-cols-3 lg:grid-cols-3">
-                <DatePicker />
-                {/* <ProjectNativeSelect /> */}
+                <DatePicker value={entryDate} onChange={setEntryDate} />
                 <TimePicker
                   label="Start Time"
                   id="startTime"
