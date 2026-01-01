@@ -30,7 +30,7 @@ const items = [
   },
   {
     title: "Work Entries",
-    url: "/work-entry/list",
+    url: "/work-entries",
     icon: Hammer,
   },
   {

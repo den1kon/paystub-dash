@@ -44,7 +44,7 @@ export default function RootLayout({
         >
           <SidebarProvider>
             <AppSidebar />
-            <main className="p-3 w-full">
+            <main className="p-3 w-full overflow-x-hidden">
               <nav className="w-full flex justify-between">
                 <SidebarTrigger />
                 <ModeToggle />
