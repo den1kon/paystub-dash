@@ -9,6 +9,7 @@ const conn = dbInstance.getConnection();
 
 Db.seedCompanies(conn);
 Db.seedProjects(conn);
+Db.seedWorkEntries(conn);
 
 const { app, shutdown } = createApp(conn);
 

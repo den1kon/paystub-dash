@@ -4,6 +4,8 @@ import { seedCompanies } from "./seed-companies.ts";
 import { seedProjects } from "./seed-projects.ts";
 import { CompanyModel } from "../models/company-model.ts";
 import { ProjectModel } from "../models/project-model.ts";
+import { seedWorkEntries } from "./seed-work-entries.tsx";
+import { WorkEntryModel } from "../models/work-entry-model.ts";
 
 export default class Db {
   private connection: Database;
@@ -75,5 +77,10 @@ export default class Db {
   static seedProjects(conn: Database): void {
     const projectModel = new ProjectModel(conn);
     seedProjects(projectModel);
+  }
+
+  static seedWorkEntries(conn: Database): void {
+    const workEntryModel = new WorkEntryModel(conn);
+    seedWorkEntries(workEntryModel);
   }
 }

@@ -2,6 +2,7 @@ import { Application } from "jsr:@oak/oak/application";
 import { Router } from "jsr:@oak/oak/router";
 import { CompanyModel } from "./models/company-model.ts";
 import { ProjectModel } from "./models/project-model.ts";
+import { WorkEntryModel } from "./models/work-entry-model.ts";
 import {
   makeCreateCompanyResponse,
   makeDeleteCompanyResponse,
@@ -14,6 +15,12 @@ import {
   makeGetAllProjectsResponse,
   makeUpdateProjectNameResponse,
 } from "./controllers/project-controller.ts";
+import {
+  makeCreateWorkEntryResponse,
+  makeDeleteWorkEntryResponse,
+  makeGetAllWorkEntriesResponse,
+  makeUpdateWorkEntryResponse,
+} from "./controllers/work-entry-controller.ts";
 import { Database } from "@db/sqlite";
 import { logger } from "./middleware/logger.ts";
 import { errorHandler } from "./middleware/error-handler.ts";
@@ -24,6 +31,7 @@ export function createApp(
 ): { app: Application; shutdown: () => void } {
   const companyModel = new CompanyModel(conn);
   const projectModel = new ProjectModel(conn);
+  const workEntryModel = new WorkEntryModel(conn);
   const router = new Router();
 
   router.get("/health", (ctx) => {
@@ -51,6 +59,16 @@ export function createApp(
     "/api/v0/projects/:id",
     makeDeleteProjectResponse(projectModel),
   );
+  router.get("/api/v0/work-entries", makeGetAllWorkEntriesResponse(workEntryModel));
+  router.post("/api/v0/work-entries", makeCreateWorkEntryResponse(workEntryModel));
+  router.put(
+    "/api/v0/work-entries/:id",
+    makeUpdateWorkEntryResponse(workEntryModel),
+  );
+  router.delete(
+    "/api/v0/work-entries/:id",
+    makeDeleteWorkEntryResponse(workEntryModel),
+  );
 
   const app = new Application();
 
@@ -66,6 +84,8 @@ export function createApp(
     console.log("Shutting down application...");
     try {
       companyModel.close();
+      projectModel.close();
+      workEntryModel.close();
       console.log("Application shutdown complete.");
     } catch (err) {
       console.error("Error during application shutdown:", err);

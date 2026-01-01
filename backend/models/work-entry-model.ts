@@ -1,10 +1,14 @@
 // deno-lint-ignore-file no-empty
 import { Database, Statement } from "@db/sqlite";
 
-export type CompanyEntity = {
+export type WorkEntryEntity = {
   id: number;
-  name: string;
-  alias: string | null;
+  project_id: number | null;
+  work_date: string;
+  start_time: string;
+  end_time: string;
+  qualification: string;
+  description: string | null;
   created_at: string;
   is_deleted: boolean;
 };
@@ -12,7 +16,7 @@ export type CompanyEntity = {
 // SQLite (driver) is synchronous, so no need for async/await
 // No plans to migrate to an async DB atm
 
-export class CompanyModel {
+export class WorkEntryModel {
   // cached sql statements
   private stmtGetAllWithDeleted: Statement<Record<string, unknown>>;
   private stmtGetAllWithoutDeleted: Statement<Record<string, unknown>>;
@@ -20,71 +24,65 @@ export class CompanyModel {
   private stmtCreate: Statement<Record<string, unknown>>;
   private stmtUpdate: Statement<Record<string, unknown>>;
   private stmtSoftDelete: Statement<Record<string, unknown>>;
-  private stmtUpdateProjectsCompanyIdToNull: Statement<Record<string, unknown>>;
 
   private closed: boolean = false; // idempotent close guard
 
   constructor(private db: Database) {
     this.stmtGetAllWithDeleted = this.db.prepare(
-      "SELECT id, name, alias, created_at, is_deleted FROM companies",
+      "SELECT id, project_id, work_date, start_time, end_time, qualification, description, created_at, is_deleted FROM work_entries",
     );
     this.stmtGetAllWithoutDeleted = this.db.prepare(
-      "SELECT id, name, alias, created_at, is_deleted FROM companies WHERE is_deleted = 0",
+      "SELECT id, project_id, work_date, start_time, end_time, qualification, description, created_at, is_deleted FROM work_entries WHERE is_deleted = 0",
     );
     this.stmtGetById = this.db.prepare(
-      "SELECT id, name, alias, created_at, is_deleted FROM companies WHERE id = ?",
+      "SELECT id, project_id, work_date, start_time, end_time, qualification, description, created_at, is_deleted FROM work_entries WHERE id = ?",
     );
     this.stmtCreate = this.db.prepare(
-      "INSERT INTO companies (name, alias) VALUES (?, ?)",
+      "INSERT INTO work_entries (project_id, work_date, start_time, end_time, qualification, description) VALUES (?, ?, ?, ?, ?, ?)",
     );
     this.stmtUpdate = this.db.prepare(
-      "UPDATE companies SET name = ?, alias = ? WHERE id = ?",
+      "UPDATE work_entries SET project_id = ?, work_date = ?, start_time = ?, end_time = ?, qualification = ?, description = ? WHERE id = ?",
     );
     this.stmtSoftDelete = this.db.prepare(
-      "UPDATE companies SET is_deleted = 1 WHERE id = ?",
-    );
-    this.stmtUpdateProjectsCompanyIdToNull = this.db.prepare(
-      "UPDATE projects SET company_id = NULL WHERE company_id = ?",
+      "UPDATE work_entries SET is_deleted = 1 WHERE id = ?",
     );
   }
 
-  getAll(includeDeleted: boolean = false): CompanyEntity[] {
+  getAll(includeDeleted: boolean = false): WorkEntryEntity[] {
     const stmt = includeDeleted
       ? this.stmtGetAllWithDeleted
       : this.stmtGetAllWithoutDeleted;
-    const result: CompanyEntity[] = stmt.all();
+    const result: WorkEntryEntity[] = stmt.all();
     return result;
   }
 
-  getById(id: number): CompanyEntity | null {
-    const result: CompanyEntity | undefined = this.stmtGetById.get(id);
+  getById(id: number): WorkEntryEntity | null {
+    const result: WorkEntryEntity | undefined = this.stmtGetById.get(id);
     return result || null;
   }
 
-  // returns id of created company
-  create(name: string, alias: string | null): number {
-    this.stmtCreate.run(name, alias);
+  // returns id of created work entry
+  create(project_id: number | null, work_date: string, start_time: string, end_time: string, qualification: string, description: string | null): number {
+    this.stmtCreate.run(project_id, work_date, start_time, end_time, qualification, description);
     const id = this.db.lastInsertRowId as number;
     return id;
   }
 
   // return number of rows affected
-  update(id: number, name: string, alias: string | null): number {
+  update(id: number, project_id: number | null, work_date: string, start_time: string, end_time: string, qualification: string, description: string | null): number {
     // extra validation can not hurt
-    if (!name || name.trim().length === 0) {
-      throw new Error("Name cannot be empty");
+    if (!work_date || work_date.trim().length === 0) {
+      throw new Error("Work date cannot be empty");
     }
 
-    this.stmtUpdate.run(name, alias, id);
+    this.stmtUpdate.run(project_id, work_date, start_time, end_time, qualification, description, id);
     return this.db.changes;
   }
 
   // return number of rows affected
   softDelete(id: number): number {
     this.stmtSoftDelete.run(id);
-    const res = this.db.changes;
-    this.stmtUpdateProjectsCompanyIdToNull.run(id);
-    return res;
+    return this.db.changes;
   }
 
   close(): void {
@@ -109,9 +107,6 @@ export class CompanyModel {
     } catch {}
     try {
       this.stmtSoftDelete.finalize();
-    } catch {}
-    try {
-      this.stmtUpdateProjectsCompanyIdToNull.finalize();
     } catch {}
   }
 }

@@ -42,7 +42,7 @@ export const migrations: Readonly<Migration[]> = Object.freeze([
         qualification VARCHAR(255) NOT NULL,
         description TEXT,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        is_deleted BOOLEAN DEFAULT 0,
         FOREIGN KEY (project_id) REFERENCES projects (id) ON DELETE SET NULL
       )
     `,
