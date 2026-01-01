@@ -3,11 +3,25 @@ import { Geist, Geist_Mono, Inter } from "next/font/google";
 import "./globals.css";
 
 import { ThemeProvider } from "@/components/theme-provider";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { AppSidebar } from "@/components/app-sidebar";
+import {
+  SidebarInset,
+  SidebarProvider,
+  SidebarTrigger,
+} from "@/components/ui/sidebar";
+import { AppSidebar } from "@/components/layout/app-sidebar";
 import { Button } from "@/components/ui/button";
 import { ArrowUpDown } from "lucide-react";
 import { ModeToggle } from "@/components/mode-toggle";
+import { Separator } from "@/components/ui/separator";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
+import { SiteHeader } from "@/components/layout/site-header";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -44,13 +58,10 @@ export default function RootLayout({
         >
           <SidebarProvider>
             <AppSidebar />
-            <main className="p-3 w-full overflow-x-hidden">
-              <nav className="w-full flex justify-between">
-                <SidebarTrigger />
-                <ModeToggle />
-              </nav>
-              {children}
-            </main>
+            <SidebarInset>
+              <SiteHeader />
+              <main className="w-full overflow-x-hidden p-3">{children}</main>
+            </SidebarInset>
           </SidebarProvider>
         </ThemeProvider>
       </body>
