@@ -14,10 +14,23 @@ class Company
     private ?string $createdAt = null;
     private bool $isDeleted;
 
-    public function __construct(string $name, ?string $alias = null)
-    {
+    private function __construct(
+        string $name,
+        ?string $alias = null,
+        ?int $id = null,
+        ?string $createdAt = null,
+        bool $isDeleted = false,
+    ) {
         $this->name = $name;
         $this->alias = $alias;
+        $this->id = $id;
+        $this->createdAt = $createdAt;
+        $this->isDeleted = $isDeleted;
+    }
+
+    public static function create(string $name, ?string $alias = null)
+    {
+        return new self($name, $alias);
     }
 
     // Getters
